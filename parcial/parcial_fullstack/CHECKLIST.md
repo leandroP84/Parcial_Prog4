@@ -22,6 +22,6 @@
 - [x] Feedback: Gestión visual de Cargando y Error.
 
 ## Video de Presentación
-- [ ] Duración: El video dura 15 minutos o menos.
-- [ ] Audio/Video: La voz es clara y la resolución permite leer el código.
-- [ ] Demo: Se muestra el flujo completo desde la creación hasta la persistencia en DB.
+- [x] Duración: El video dura 15 minutos o menos.
+- [x] Audio/Video: La voz es clara y la resolución permite leer el código.
+- [x] Demo: Se muestra el flujo completo desde la creación hasta la persistencia en DB.

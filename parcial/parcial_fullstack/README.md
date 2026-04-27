@@ -76,6 +76,4 @@ El frontend usa:
 
 ## Link al video
 
-Agregar acá el link al video de YouTube oculto o Drive:
-
-`PEGAR_LINK_DEL_VIDEO_AQUI`
+https://youtu.be/6F5-1d1Vwyo
