@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: parcial_prog4_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: parcial_programacion4
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

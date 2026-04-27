@@ -1,0 +1,16 @@
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { catalogoApi } from '../../api/catalogo';
+import type { Ingrediente } from '../../types/models';
+import { Modal } from '../../components/Modal';
+import { LoadingError } from '../../components/LoadingError';
+
+const empty = { nombre:'', unidad_medida:'unidad', stock:0, es_alergeno:false };
+export function IngredientesPage(){
+ const qc=useQueryClient(); const [open,setOpen]=useState(false); const [edit,setEdit]=useState<Ingrediente|null>(null); const [form,setForm]=useState(empty);
+ const {data=[],isLoading,error}=useQuery({queryKey:['ingredientes'],queryFn:catalogoApi.ingredientes});
+ const save=useMutation({mutationFn:()=> edit ? catalogoApi.editarIngrediente(edit.id,form) : catalogoApi.crearIngrediente(form), onSuccess:()=>{qc.invalidateQueries({queryKey:['ingredientes']}); setOpen(false); setEdit(null); setForm(empty)}});
+ const del=useMutation({mutationFn:catalogoApi.borrarIngrediente,onSuccess:()=>qc.invalidateQueries({queryKey:['ingredientes']})});
+ function start(i?:Ingrediente){setEdit(i??null); setForm(i?{nombre:i.nombre,unidad_medida:i.unidad_medida,stock:i.stock,es_alergeno:i.es_alergeno}:empty); setOpen(true)}
+ return <section><div className="flex justify-between mb-4"><h2 className="text-2xl font-bold">Ingredientes</h2><button onClick={()=>start()} className="bg-slate-900 text-white px-4 py-2 rounded-xl">Nuevo ingrediente</button></div><LoadingError isLoading={isLoading} error={error as Error|null}/><div className="bg-white rounded-2xl shadow overflow-hidden"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">Nombre</th><th>Unidad</th><th>Stock</th><th>Alérgeno</th><th>Acciones</th></tr></thead><tbody>{data.map(i=><tr className="border-t" key={i.id}><td className="p-3 font-medium">{i.nombre}</td><td>{i.unidad_medida}</td><td>{i.stock}</td><td>{i.es_alergeno?'Sí':'No'}</td><td className="space-x-2"><button onClick={()=>start(i)} className="px-3 py-1 bg-blue-100 rounded-lg">Editar</button><button onClick={()=>del.mutate(i.id)} className="px-3 py-1 bg-red-100 rounded-lg">Eliminar</button></td></tr>)}</tbody></table></div><Modal title={edit?'Editar ingrediente':'Nuevo ingrediente'} open={open} onClose={()=>setOpen(false)}><form onSubmit={(e)=>{e.preventDefault();save.mutate()}} className="grid gap-3"><input className="border rounded-xl p-2" placeholder="Nombre" minLength={3} value={form.nombre} onChange={e=>setForm({...form,nombre:e.target.value})}/><input className="border rounded-xl p-2" placeholder="Unidad" value={form.unidad_medida} onChange={e=>setForm({...form,unidad_medida:e.target.value})}/><input className="border rounded-xl p-2" type="number" min="0" step="0.01" value={form.stock} onChange={e=>setForm({...form,stock:Number(e.target.value)})}/><label className="flex gap-2"><input type="checkbox" checked={form.es_alergeno} onChange={e=>setForm({...form,es_alergeno:e.target.checked})}/> Es alérgeno</label><button className="bg-slate-900 text-white rounded-xl p-2">Guardar</button>{save.error && <p className="text-red-600">{save.error.message}</p>}</form></Modal></section>
+}

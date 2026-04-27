@@ -1,0 +1,1 @@
+export function LoadingError({isLoading,error}:{isLoading:boolean; error: Error | null}){ if(isLoading) return <p className="p-4 bg-white rounded-xl">Cargando...</p>; if(error) return <p className="p-4 bg-red-50 text-red-700 rounded-xl">Error: {error.message}</p>; return null; }
